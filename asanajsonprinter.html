@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Asana-JSON-Printer</title>
+<meta name="description" content="Tool to convert an ASANA task in JSON format to a easy to print HTML table">
+<meta name="author" content="Tillersen www.github.com/tillersen">
+
+<script src="asanajsonprinter.js"></script>
+
+<link rel="stylesheet" href="w3.css">
+<link rel="stylesheet" href="w3-theme-black.css">
+<link rel="stylesheet" href="font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="asanajsonprinter.css">
+
+<body>
+
+<!-- Header -->
+<header class="w3-container w3-theme w3-padding" id="ajpr-header">
+  <div class="w3-center">
+  <h1 class="w3-xxlarge">Asana-JSON-Printer</h1>
+  <p class="ajpr-noprint">Convert JSON-output of Asana projects into an easy to print HTML table. Or just copy and paste it in word, e-mail, etc.</p>
+  </div>
+</header>
+
+<div class="w3-cell-row">
+	<div id="ajpr-input-div" class="w3-container w3-red w3-third w3-cell w3-hide w3-show ajpr-noprint">
+		<h3 class="ajpr-noprint">Input</h3> 
+			<form id="ajpr-input-form" class="w3-container w3-card-4">
+			<h4>Step 1: Select your input</h4>
+			<div class="w3-row">  
+				<div class="w3-container">
+				<p>Paste your JSON-Code from ASANA into the textbox below</p>
+				<textarea id="ajpr-json-textbox" rows="3"></textarea>
+				</div>
+				<div class="w3-container">
+				<p>Or choose a file with JSON-Code from your device:</p> 
+				<input type="file" id="ajpr-json-file" class="w3-input w3-red" onchange="AJPRreadfile(this);" title="Choose a local file with JSON-code">
+				</div>
+			</div>
+			  
+			<h4>Step 2: Choose output options <small>(optional)</small></h4>
+				<div class="w3-container">
+					<label><input type="checkbox" class="w3-check" id="ajpr-nr-check" checked="checked">Show <strong>Row Numbers</strong></label> <br/>
+					
+					<label><input type="checkbox" class="w3-check" id="ajpr-duedate-check" checked="checked">Show <strong>Due Date</strong></label> <br/>
+					<label>Due-date missing value:</label><input type="text" class="w3-input w3-small" id="txtNoDuedateString" size="8" value="-"><br/>
+					
+					<label><input type="checkbox" class="w3-check" id="ajpr-duedate-relative-check" checked="checked">Show a Due Date relative to </label> 
+					<input type="date" class="w3-input w3-small" id="ajpr-refdate" size="8" value="" onchange="AJPRupdateRefDateInTH();"><br/>
+					
+					<label><input type="checkbox" class="w3-check" id="ajpr-assignee-check" checked="checked">Show <strong>Assignee</strong></label><br/>
+					
+					<label>Assignee missing value:<input type="text" class="w3-input w3-small" id="txtNoAssigneeString" size="8" value="-"></label><br/>
+					
+					<label><input type="checkbox" class="w3-check" id="ajpr-projects-check" checked="checked">Show <strong>Projects</strong> <i class="fa fa-line-chart fa-lg" aria-hidden="true"></i></label><br/>
+					
+					<label><input type="checkbox" class="w3-check" id="ajpr-status-check">Show <strong>Status</strong> <i class="fa fa-check-square fa-lg" aria-hidden="true"></i>(completed) in extra column </label><br/>
+					
+					<label><input type="checkbox" class="w3-check" id="ajpr-tags-check">Show <strong>Tags</strong> <i class="fa fa-tags fa-lg" aria-hidden="true"></i></label><br/>
+					
+					<label><input type="checkbox" class="w3-check" id="ajpr-likes-check">Show <strong>Likes</strong> <i class="fa fa-thumbs-o-up fa-lg" aria-hidden="true"></i></label><br/>
+		
+				</div>
+			<h4>Step 3: Generate output</h4>
+			<div class="w3-container w3-padding">
+				<a class="w3-button w3-theme w3-margin-bottom" onclick="AJPRconvertJson(document.getElementById('ajpr-json-textbox').value);return false;">Convert <i class="fa fa-gears fa-2x" aria-hidden="true"></i></a>
+			</div>
+		</form>
+	</div>
+	<div id="ajpr-output-div" class="w3-container w3-white w3-twothird w3-display-container w3-cell"> 
+			<div class="w3-display-topright ajpr-noprint">
+				<a class="w3-button" onclick="AJPRtoggleInput();return false;">
+				<i id="ajpr-toggle-button" class="fa fa-toggle-left fa-2x" aria-hidden="true"></i></a>
+			</div>
+			<h3 class="ajpr-noprint">Output</h3>
+			<div class="w3-bar ajpr-noprint">
+			<button class="w3-button w3-theme w3-hover-red" onclick="AJPRmarkOutputTable()">
+			<i class="fa fa-i-cursor fa-lg" aria-hidden="true"></i>
+			 Select whole table</button> 
+			<button class="w3-button w3-theme w3-hover-red" onclick="AJPRcopyOutputTable()">
+			<i class="fa fa-clipboard fa-lg" aria-hidden="true"></i>
+			 Copy table to system clipboard </button>
+			<button class="w3-button w3-theme w3-hover-red" onclick="AJPRprint()">
+			<i class="fa fa-print fa-lg" aria-hidden="true"></i>
+			 (Pretty) Print page </button>
+			</div>
+			<div id="ajpr-output-infobox" class="w3-panel">
+			<!-- Infobox Output will be generated here -->
+			</div>
+			
+				<table id="ajpr-output-table" class="w3-table w3-striped w3-border w3-card w3-margin-bottom">
+					<thead id="ajpr-output-table-head">
+						<tr class="w3-red">
+						<th id="ajpr-nr-th">Nr</th>
+						<th id="ajpr-status-th"><i class="fa fa-check-square fa-lg" aria-hidden="true"></i> Status </th>
+						<th id="ajpr-task-th"><i class="fa fa-file-text fa-lg" aria-hidden="true"></i> Task </th>
+						<th id="ajpr-duedate-th"><i class="fa fa-calendar fa-lg" aria-hidden="true"></i> Due Date </th>
+						<th id="ajpr-duedate-relative-th"><i class="fa fa-calendar fa-lg" aria-hidden="true"></i> Days left <span id="ajpr-refdate-in-th"></span></th>
+						<th id="ajpr-assignee-th"><i class="fa fa-user fa-lg" aria-hidden="true"></i> Assignee </th>
+						<th id="ajpr-projects-th"><i class="fa fa-line-chart fa-lg" aria-hidden="true"></i> Projects </th>
+						<th id="ajpr-tags-th"><i class="fa fa-tags fa-lg" aria-hidden="true"></i> Tags </th>
+						<th id="ajpr-likes-th"><i class="fa fa-thumbs-o-up fa-lg" aria-hidden="true"></i> Likes </th>
+						</tr>
+					</thead>
+					<tbody id="ajpr-output-table-body">
+					<!-- Converted JSON Output will be generated here -->
+						<tr style="height: 4em;">
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+						</tr>
+					</tbody>
+				</table>
+			 
+	</div>
+</div>
+<!-- Help, INstruction -->
+<div id="ajpr-help" class="w3-cell-row w3-blue">
+	<div class=" ajpr-helpbox w3-container w3-cell w3-blue w3-mobile">
+		<p><i class="fa fa-shield fa-2x" aria-hidden="true"></i> Concerned about <strong>privacy and data security</strong>? Don't worry. This a 100% client-side tool made from HTML5, CSS and JavaScript. No data is transfered to any server at any time. </p>
+	</div>
+	<div class=" ajpr-helpbox w3-container w3-cell w3-blue w3-mobile">
+		<p><i class="fa fa-question-circle fa-2x" aria-hidden="true"></i> 
+		Where can I create that magic <strong>JSON-Code</strong> in Asana? <br/>
+		Within Asana open the project that you want to print. Then click on the chevron-down sign (<i class="fa fa-chevron-down fa-lg" aria-hidden="true"></i>) next to the project title. The project menu opens. Select Export/Print &gt; JSON. A new window/tab will open with the task list coded in JSON format. You can safe that file and load it here or just copy and paste it in the text-box above.</p>
+	</div>
+	<div class=" ajpr-helpbox w3-container w3-cell w3-blue w3-mobile">
+		<p><i class="fa fa-question-circle fa-2x" aria-hidden="true"></i> 
+		How can I print the <strong>"My tasks"</strong> view in Asana? <br/>
+		Unfortunately Asana offers the JSON-Export only in projects but hides this option in the "my tasks" view.</p>
+	</div>
+	<div class=" ajpr-helpbox w3-container w3-cell w3-blue w3-mobile">
+		<p><i class="fa fa-question-circle fa-2x" aria-hidden="true"></i> 
+		Where are my <strong>subtasks</strong>? <br/>
+		Subtasks are not shown in the list because of a Asana does not export the subtasks in the JSON-Code.</p>
+	</div>
+</div>
+<!-- Footer -->
+<footer id="ajpr-footer" class="w3-container w3-theme-dark w3-padding-16 w3-center">
+		<p>Created by Tillersen - version 2018-01-16 - www.github.com/tillersen</p>
+		<p>Uses the follwing  libraries, templates and packages:<br/>
+		- w3.css CSS Style Sheet Template - <br/>
+		- Font Awesome by Dave Gandy - http://fontawesome.io - <br/>
+		</p>
+</footer>
+</body></html>

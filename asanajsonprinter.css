@@ -1,0 +1,56 @@
+.ajpr-asana-nr {
+	color: rgb(140,140,140) !important;
+}
+.ajpr-asana-section {
+	font-weight: bold;
+	text-decoration: underline;
+}
+.ajpr-asana-task {
+	font-weight: normal;
+	font-style: none;
+}
+
+.ajpr-asana-task-in-section {
+	padding-left: 2em !important;
+}
+/* CSS for Asana-JSON-Printer */
+
+.ajpr-asana-status-completed {
+	color: rgb(140,140,140);
+	text-decoration: line-through; !important;
+}
+
+.ajpr-helpbox {
+	width: 60em;
+}
+
+#ajpr-json-textbox {
+	width:100%; 
+	white-space: nowrap;  
+	overflow: auto;
+}
+
+@media only print {
+	#ajpr-header {
+        /* display: none; */
+    }
+	#ajpr-input-div {
+		width: 0%;
+        display: none;
+    }
+    #ajpr-input-form {
+        display: none;
+    }
+	#ajpr-output-div {
+		width: 100%;
+    }
+    #ajpr-help {
+        display: none;
+    }
+    #ajpr-footer {
+        display: none;
+    }
+	.ajpr-noprint {
+        display: none;
+    }
+}
