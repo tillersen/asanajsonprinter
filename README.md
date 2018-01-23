@@ -8,7 +8,7 @@ The purpose of this tool is to overcome the limited printing capabilities of Asa
 As this is a hobby project, don't expect too much and use it at your own risk. :-)
 
 ## How to install and use it
-Download the latest version from github. Goto https://github.com/tillersen/asanajsonprinter/releases, scroll to the latest release and download the file named 'source code'. It's a html project so there are no binaries or exe-files or setup-files. Copy the whole pack of files into a directory of choice. Then open the asanajsonprinter.html file in an up-to-date browser. 
+Download the latest version from github. Goto https://github.com/tillersen/asanajsonprinter/releases/latest and download the file named 'source code'. It's a html project so there are no binaries or exe-files or setup-files. Unpack the whole bunch of files into a directory of choice. Then open the asanajsonprinter.html file in an up-to-date browser. 
 
 ## Technical stuff
 The tool is a browser-based software using standard web techniques (HTML5, JavaScript, CSS). The tool is completely client-sided and no data exchange with Asana or other external servers or services happens. The tool is in a state where it can be used in daily work life. The tool requires an up-to-date web browser like Chrome 63, IE11, Firefox 57 because of HTML5 techniques used.
