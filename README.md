@@ -13,3 +13,12 @@ Just copy the how pack of files into a directory of choice. Then open the asanaj
 ## Technical stuff
 The tool is a browser-based software using standard web techniques (HTML5, JavaScript, CSS). The tool is completely client-sided and no data exchange with Asana or other external servers or services happens. The tool is in a state where it can be used in daily work life. The tool requires an up-to-date web browser like Chrome 63, IE11, Firefox 57 because of HTML5 techniques used.
 
+## How to use this tool with Asana?
+Asanajsonprinter is a helper tool for users of the cloud-based Asana task management software. Up to now (01/2018) Asana is lacking proper printing functionality for project task lists. Asanajsonprinter converts JSON-Code produced by Asana's export function into nice looking and easy to print tables. You can either read in a existing JSON file from you local device or just copy and paste the freshly produced JSON code.
+* Open your project in Asana
+* Click on the chevron-down sign next to the project title. The project menu opens. 
+* Select Export/Print > JSON. A new window/tab will open with the task list coded in JSON format.
+* You can safe that file and load it in the tool or just copy and paste it in the text-box.
+* Choose some options as you like 
+* Press convert. The output table is generated
+* Enjoy, You can now copy the table into office files, e-mails or ust print it
