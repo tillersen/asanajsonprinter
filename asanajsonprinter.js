@@ -99,7 +99,7 @@ function AJPRconvertJson(s) {
 				}
 			
 			/* Analyse Likes: */
-			if (E.liked = true){
+			if (E.liked == true){
 				E.likes = E.likes.length;
 				}
 		}
